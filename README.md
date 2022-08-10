@@ -9,11 +9,16 @@
 
 2. Install [Chart](./charts):
 
-   ```console
+   ```bash
    git clone https://github.com/influxtsdb/helm-charts.git
    cd helm-charts/charts
-   helm install influx-proxy influx-proxy # install influx-proxy
+   # install influx-proxy
+   helm install influx-proxy ./influx-proxy
    ```
+
+## Charts
+
+- [influx-proxy](https://github.com/chengshiwen/influx-proxy): InfluxDB Proxy with High Availability and Consistent Hash
 
 ## Support
 
