@@ -1,0 +1,22 @@
+Get the InfluxDB Cluster HTTP URL by running these commands:
+{{- if .Values.data.ingress.enabled }}
+{{- range $host := .Values.data.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.data.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- else if contains "NodePort" .Values.data.service.type }}
+  export NODE_PORT=$(kubectl get -n {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "influxdb-cluster.fullname" . }}-data)
+  export NODE_IP=$(kubectl get nodes -n {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.data.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get -n {{ .Release.Namespace }} svc -w {{ include "influxdb-cluster.fullname" . }}-data'
+  export SERVICE_IP=$(kubectl get svc -n {{ .Release.Namespace }} {{ include "influxdb-cluster.fullname" . }}-data --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo http://$SERVICE_IP:8086
+{{- else if contains "ClusterIP" .Values.data.service.type }}
+  kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "influxdb-cluster.fullname" . }}-data 8086:8086
+  http://127.0.0.1:8086
+{{- end }}
+By default, InfluxDB Cluster can be accessed via port 8086 on the following DNS name from within your kubernetes cluster:
+  http://{{ include "influxdb-cluster.fullname" . }}-data.{{ .Release.Namespace }}:8086

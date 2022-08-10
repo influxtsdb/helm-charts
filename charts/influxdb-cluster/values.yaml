@@ -1,0 +1,237 @@
+# Default values for influxdb-cluster.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Sets the tagged version of the docker image that you want to run
+# The suffix is if you are pulling from influxdb repo,
+# example images will be chengshiwen/influxdb:1.8.10-c1.0.0-meta and chengshiwen/influxdb:1.8.10-c1.0.0-data
+image:
+  repository: chengshiwen/influxdb
+  # tag: 1.8.10-c1.0.0
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+meta:
+  replicas: 3
+  image:
+    pullPolicy: IfNotPresent
+    # repository: chengshiwen/influxdb
+  # nodeSelector: {}
+  # tolerations: []
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: influxdb.cluster/component
+              operator: In
+              values:
+              - meta
+          topologyKey: kubernetes.io/hostname
+  # podAnnotations: {}
+  #
+  # podSecurityContext: {}
+  #   fsGroup: 2000
+  #
+  # This allows you to run the pods as a non-privileged user, set to the uid
+  # securityContext: {}
+  #   runAsUser: 2000
+  #   runAsGroup: 2000
+  #  capabilities:
+  #    drop:
+  #    - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+  #
+  # These are the commands that will be run before influxdb is started
+  # preruncmds:
+  #   - cmd: ls -l
+  #     description: We want to see what's in the directory
+  #   - cmd: stat $HOME/somefile
+  #     description: And we run a second command
+  # This secret needs a key called "secret" and it should be a long random string
+  # Please see docs for shared-internal-secret:
+  # https://docs.influxdata.com/enterprise_influxdb/v1.8/administration/config-data-nodes/#meta-internal-shared-secret
+  # sharedSecret:
+  #   secretName: influxdb-shared-secret
+  #
+  service:
+    ## Specify a service type
+    ## ClusterIP is default
+    ## ref: http://kubernetes.io/docs/user-guide/services/
+    type: ClusterIP
+    # loadBalancerIP: ""
+    # externalIPs: []
+    # externalTrafficPolicy: ""
+    # nodePort: 30086
+    ## Add annotations to service
+    # annotations: {}
+  #
+  ## Persist data to a persistent volume
+  persistence:
+    enabled: true
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
+    ## influxdb data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    storageClass: "alicloud-disk-available"
+    annotations: {}
+    accessMode: ReadWriteOnce
+    size: 25Gi
+  # Pick one
+  podDisruptionBudget:
+    # maxUnavailable: 2
+    minAvailable: 2
+  https:
+    # If you need to debug the data nodes registration with the meta nodes, we recommend
+    # that you comment out the active curl command in the data-configmap and uncomment the following
+    # line, which has -v / debugging enabled.
+    enabled: false
+    # The `useCertManager` option, when set to true, will
+    # automatically create the certificate resources for you.
+    # You do not need to set the secret.name when using this flag.
+    useCertManager: false
+    secret:
+      name: influxdb-tls
+      # crt: tls.crt
+      # key: tls.key
+      # ca: ca.crt
+      # caSecret: secret-name # only use if different from the above
+    insecure: true
+  ## Additional data container environment variables e.g.:
+  ##   INFLUXDB_HTTP_FLUX_ENABLED: "true"
+  env: {}
+
+data:
+  replicas: 2
+  image:
+    pullPolicy: IfNotPresent
+    # repository: chengshiwen/influxdb
+  # nodeSelector: {}
+  # tolerations: []
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: influxdb.cluster/component
+              operator: In
+              values:
+              - data
+          topologyKey: kubernetes.io/hostname
+  # podAnnotations: {}
+  #
+  # podSecurityContext: {}
+  #   fsGroup: 2000
+  #
+  # This allows you to run the pods as a non-privileged user, set to the uid
+  # securityContext: {}
+  #   runAsUser: 2000
+  #   runAsGroup: 2000
+  #  capabilities:
+  #    drop:
+  #    - ALL
+  #  capabilities:
+  #    drop:
+  #    - ALL
+  #
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+  #
+  # These are the commands that will be run before influxdb is started
+  # preruncmds:
+  #   - cmd: ls -l
+  #     description: We want to see what's in the directory
+  #   - cmd: stat $HOME/somefile
+  #     description: And we run a second command
+  #
+  service:
+    ## Specify a service type
+    ## ClusterIP is default
+    ## ref: http://kubernetes.io/docs/user-guide/services/
+    type: ClusterIP
+    # nodePort: 30086
+    # loadBalancerIP: ""
+    # externalIPs: []
+    # externalTrafficPolicy: ""
+    ## Add annotations to service
+    # annotations: {}
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+  #
+  ## Persist data to a persistent volume
+  persistence:
+    enabled: true
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
+    ## influxdb data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    storageClass: "alicloud-disk-available"
+    annotations: {}
+    accessMode: ReadWriteOnce
+    size: 25Gi
+  https:
+    # If you need to debug the data nodes registration with the meta nodes, we recommend
+    # that you comment out the active curl command in the data-configmap and uncomment the following
+    # line, which has -v / debugging enabled.
+    enabled: false
+    # The `useCertManager` option, when set to true, will
+    # automatically create the certificate resources for you.
+    # You do not need to set the secret.name when using this flag.
+    useCertManager: false
+    secret:
+      name: influxdb-tls
+      # crt: tls.crt
+      # key: tls.key
+      # ca: ca.crt
+      # caSecret: secret-name # only use if different from the above
+    insecure: true
+  flux:
+    enabled: true
+  ## Additional data container environment variables e.g.:
+  ##   INFLUXDB_HTTP_FLUX_ENABLED: "true"
+  env: {}

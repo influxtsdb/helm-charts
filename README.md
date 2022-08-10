@@ -14,11 +14,14 @@
    cd helm-charts/charts
    # install influx-proxy
    helm install influx-proxy ./influx-proxy
+   # install influxdb-cluster
+   helm install influxdb-cluster ./influxdb-cluster
    ```
 
 ## Charts
 
 - [influx-proxy](./charts/influx-proxy): Helm chart for [InfluxDB Proxy](https://github.com/chengshiwen/influx-proxy), a Layer to InfluxDB with High Availability and Consistent Hash
+- [influxdb-cluster](./charts/influxdb-cluster): Helm chart for [InfluxDB Cluster](https://github.com/chengshiwen/influxdb-cluster), Open Source Alternative to InfluxDB Enterprise
 
 ## Support
 
