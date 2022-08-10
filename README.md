@@ -18,7 +18,7 @@
 
 ## Charts
 
-- [influx-proxy](https://github.com/chengshiwen/influx-proxy): InfluxDB Proxy with High Availability and Consistent Hash
+- [influx-proxy](./charts/influx-proxy): Helm chart for [InfluxDB Proxy](https://github.com/chengshiwen/influx-proxy), a Layer to InfluxDB with High Availability and Consistent Hash
 
 ## Support
 
