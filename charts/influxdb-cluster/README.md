@@ -75,3 +75,4 @@ in an empty directory, so if a Pod restarts, data is lost.
 ## Configuration
 
 Please refer to [Configure Meta Nodes](https://github.com/chengshiwen/influxdb-cluster/wiki/Configure-Meta-Nodes) and [Configure Data Nodes](https://github.com/chengshiwen/influxdb-cluster/wiki/Configure-Data-Nodes).
+And then modify [meta-configmap.yaml](./templates/meta-configmap.yaml) and [data-configmap.yaml](./templates/data-configmap.yaml).

@@ -62,4 +62,4 @@ in an empty directory, so if a Pod restarts, data is lost.
 
 ## Configuration
 
-Please refer to [Proxy Configuration](https://github.com/chengshiwen/influx-proxy#proxy-configuration) and modify [configmap.yaml](./templates/configmap.yaml):
+Please refer to [Proxy Configuration](https://github.com/chengshiwen/influx-proxy#proxy-configuration) and modify [configmap.yaml](./templates/configmap.yaml).
