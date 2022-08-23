@@ -63,3 +63,7 @@ in an empty directory, so if a Pod restarts, data is lost.
 ## Configuration
 
 Please refer to [Proxy Configuration](https://github.com/chengshiwen/influx-proxy#proxy-configuration) and modify [configmap.yaml](./templates/configmap.yaml).
+
+## Install InfluxDB
+
+Please refer to [InfluxDB Helm chart](https://github.com/influxdata/helm-charts/tree/master/charts/influxdb).
