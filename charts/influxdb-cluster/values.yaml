@@ -4,10 +4,10 @@
 
 # Sets the tagged version of the docker image that you want to run
 # The suffix is if you are pulling from influxdb repo,
-# example images will be chengshiwen/influxdb:1.8.10-c1.0.0-meta and chengshiwen/influxdb:1.8.10-c1.0.0-data
+# example images will be chengshiwen/influxdb:1.8.10-c1.1.0-meta and chengshiwen/influxdb:1.8.10-c1.1.0-data
 image:
   repository: chengshiwen/influxdb
-  # tag: 1.8.10-c1.0.0
+  # tag: 1.8.10-c1.1.0
 
 imagePullSecrets: []
 nameOverride: ""
