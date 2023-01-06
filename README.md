@@ -16,12 +16,15 @@
    helm install influx-proxy ./influx-proxy
    # install influxdb-cluster
    helm install influxdb-cluster ./influxdb-cluster
+   # install influxdb-admin
+   helm install influxdb-admin ./influxdb-admin
    ```
 
 ## Charts
 
 - [influx-proxy](./charts/influx-proxy): Helm chart for [InfluxDB Proxy](https://github.com/chengshiwen/influx-proxy), a Layer to InfluxDB with High Availability and Consistent Hash
 - [influxdb-cluster](./charts/influxdb-cluster): Helm chart for [InfluxDB Cluster](https://github.com/chengshiwen/influxdb-cluster), Open Source Alternative to InfluxDB Enterprise
+- [influxdb-admin](./charts/influxdb-admin): Helm chart for [InfluxDB Admin](https://github.com/influxtsdb/influxdb-admin), InfluxDB Web Admin Interface
 
 ## Support
 
