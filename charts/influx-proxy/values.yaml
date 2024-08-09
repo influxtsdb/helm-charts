@@ -8,7 +8,7 @@ image:
   repository: chengshiwen/influx-proxy
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "2.5.10"
+  tag: "2.5.11"
 
 imagePullSecrets: []
 nameOverride: ""
