@@ -5,23 +5,18 @@ metadata:
   annotations:
 {{ toYaml .Values.data.service.annotations | indent 4 }}
 {{- end }}
-  name: {{ template "influxdb-cluster.fullname" . }}-data
+  name: {{ template "influxdb-cluster.fullname" . }}-data-headless
   labels:
-    influxdb.cluster/component: data
+    influxdb.cluster/component: data-headless
     {{- include "influxdb-cluster.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.data.service.type }}
-{{- if and (eq "ClusterIP" .Values.data.service.type) .Values.data.service.clusterIP }}
-  clusterIP: {{ .Values.data.service.clusterIP }}
-{{- end }}
+  type: ClusterIP
+  clusterIP: None
   publishNotReadyAddresses: true
   ports:
   - port: 8086
     protocol: TCP
     name: http
-{{- if and (eq "NodePort" .Values.data.service.type) .Values.data.service.nodePort }}
-    nodePort: {{ .Values.data.service.nodePort }}
-{{- end }}
   - port: 8088
     protocol: TCP
     name: rpc
@@ -36,24 +31,12 @@ spec:
     name: opentsdb
     # LoadBalancer service type only allows for one protocol
     # disbaling UDP ports
-{{- if (ne "LoadBalancer" .Values.data.service.type) }}
   - port: 25826
     protocol: UDP
     name: collectd
   - port: 8089
     protocol: UDP
     name: udp
-{{- end }}
   selector:
     influxdb.cluster/component: data
 {{- include "influxdb-cluster.selectorLabels" . | nindent 4 }}
-{{- if .Values.data.service.loadBalancerIP }}
-  loadBalancerIP: {{ .Values.data.service.loadBalancerIP }}
-{{- end }}
-{{- if .Values.data.service.externalIPs }}
-  externalIPs:
-{{ toYaml .Values.data.service.externalIPs | indent 4 }}
-{{- end }}
-{{- if .Values.data.service.externalTrafficPolicy }}
-  externalTrafficPolicy: {{ .Values.data.service.externalTrafficPolicy }}
-{{- end }}

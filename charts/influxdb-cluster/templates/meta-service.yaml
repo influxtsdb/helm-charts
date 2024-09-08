@@ -11,8 +11,8 @@ metadata:
     {{- include "influxdb-cluster.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.meta.service.type }}
-{{- if (eq "ClusterIP" .Values.meta.service.type) }}
-  clusterIP: None
+{{- if and (eq "ClusterIP" .Values.meta.service.type) .Values.meta.service.clusterIP }}
+  clusterIP: {{ .Values.meta.service.clusterIP }}
 {{- end }}
   publishNotReadyAddresses: true
   ports:
@@ -22,7 +22,7 @@ spec:
   - port: 8091
     protocol: TCP
     name: http
-{{- if .Values.meta.service.nodePort }}
+{{- if and (eq "NodePort" .Values.meta.service.type) .Values.meta.service.nodePort }}
     nodePort: {{ .Values.meta.service.nodePort }}
 {{- end }}
   selector:

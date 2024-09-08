@@ -37,12 +37,47 @@ bootstrap an InfluxDB Cluster StatefulSet and service on a
 
 ```bash
 kubectl exec -it influxdb-cluster-meta-0 bash
-influxd-ctl add-meta influxdb-cluster-meta-0.influxdb-cluster-meta:8091
-influxd-ctl add-meta influxdb-cluster-meta-1.influxdb-cluster-meta:8091
-influxd-ctl add-meta influxdb-cluster-meta-2.influxdb-cluster-meta:8091
-influxd-ctl add-data influxdb-cluster-data-0.influxdb-cluster-data:8088
-influxd-ctl add-data influxdb-cluster-data-1.influxdb-cluster-data:8088
+influxd-ctl add-meta influxdb-cluster-meta-0.influxdb-cluster-meta-headless:8091
+influxd-ctl add-meta influxdb-cluster-meta-1.influxdb-cluster-meta-headless:8091
+influxd-ctl add-meta influxdb-cluster-meta-2.influxdb-cluster-meta-headless:8091
+influxd-ctl add-data influxdb-cluster-data-0.influxdb-cluster-data-headless:8088
+influxd-ctl add-data influxdb-cluster-data-1.influxdb-cluster-data-headless:8088
 influxd-ctl show
+```
+
+### Create your first database
+
+```
+curl -XPOST "http://influxdb-cluster-data:8086/query" --data-urlencode "q=CREATE DATABASE mydb WITH REPLICATION 2"
+```
+
+### Insert some data
+
+```
+curl -XPOST "http://influxdb-cluster-data:8086/write?db=mydb" \
+-d 'cpu,host=server01,region=uswest load=42 1434055562000000000'
+
+curl -XPOST "http://influxdb-cluster-data:8086/write?db=mydb&consistency=all" \
+-d 'cpu,host=server02,region=uswest load=78 1434055562000000000'
+
+curl -XPOST "http://influxdb-cluster-data:8086/write?db=mydb&consistency=quorum" \
+-d 'cpu,host=server03,region=useast load=15.4 1434055562000000000'
+```
+
+> **Note**: `consistency=[any,one,quorum,all]` sets the write consistency for the point. `consistency` is `one` if you do not specify consistency. See the [Insert some data / Write consistency](https://github.com/chengshiwen/influxdb-cluster/wiki/Home-Eng#insert-some-data) for detailed descriptions of each consistency option.
+
+### Query for the data
+
+```
+curl -G "http://influxdb-cluster-data:8086/query?pretty=true" --data-urlencode "db=mydb" \
+--data-urlencode "q=SELECT * FROM cpu WHERE host='server01' AND time < now() - 1d"
+```
+
+### Analyze the data
+
+```
+curl -G "http://influxdb-cluster-data:8086/query?pretty=true" --data-urlencode "db=mydb" \
+--data-urlencode "q=SELECT mean(load) FROM cpu WHERE region='uswest'"
 ```
 
 ## Uninstall the chart

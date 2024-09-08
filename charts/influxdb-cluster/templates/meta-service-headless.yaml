@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.meta.service.annotations }}
+  annotations:
+{{ toYaml .Values.meta.service.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "influxdb-cluster.fullname" . }}-meta-headless
+  labels:
+    influxdb.cluster/component: meta-headless
+    {{- include "influxdb-cluster.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+  - port: 8089
+    protocol: TCP
+    name: raft
+  - port: 8091
+    protocol: TCP
+    name: http
+  selector:
+    influxdb.cluster/component: meta
+    {{- include "influxdb-cluster.selectorLabels" . | nindent 4 }}

@@ -74,10 +74,11 @@ meta:
     ## ClusterIP is default
     ## ref: http://kubernetes.io/docs/user-guide/services/
     type: ClusterIP
+    # clusterIP: ""
+    # nodePort: 30091
     # loadBalancerIP: ""
     # externalIPs: []
     # externalTrafficPolicy: ""
-    # nodePort: 30086
     ## Add annotations to service
     # annotations: {}
   #
@@ -174,6 +175,7 @@ data:
     ## ClusterIP is default
     ## ref: http://kubernetes.io/docs/user-guide/services/
     type: ClusterIP
+    # clusterIP: ""
     # nodePort: 30086
     # loadBalancerIP: ""
     # externalIPs: []

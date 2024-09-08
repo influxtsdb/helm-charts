@@ -7,7 +7,7 @@ metadata:
 spec:
   replicas: {{ .Values.meta.replicas | default 3 }}
   podManagementPolicy: Parallel
-  serviceName: {{ include "influxdb-cluster.fullname" . }}-meta
+  serviceName: {{ include "influxdb-cluster.fullname" . }}-meta-headless
   selector:
     matchLabels:
       influxdb.cluster/component: meta
@@ -37,7 +37,7 @@ spec:
             - /bin/bash
           args:
             - -c
-            - export INFLUXDB_HOSTNAME=${POD_NAME}.{{ template "influxdb-cluster.fullname" . }}-meta && /entrypoint.sh influxd-meta
+            - export INFLUXDB_HOSTNAME=${POD_NAME}.{{ template "influxdb-cluster.fullname" . }}-meta-headless && /entrypoint.sh influxd-meta
           {{- if .Values.meta.securityContext }}
           securityContext:
             {{- toYaml .Values.meta.securityContext | nindent 12 }}

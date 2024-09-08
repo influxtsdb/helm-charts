@@ -7,7 +7,7 @@ metadata:
 spec:
   replicas: {{ .Values.data.replicas | default 2 }}
   podManagementPolicy: Parallel
-  serviceName: {{ include "influxdb-cluster.fullname" . }}-data
+  serviceName: {{ include "influxdb-cluster.fullname" . }}-data-headless
   selector:
     matchLabels:
       influxdb.cluster/component: data
@@ -37,7 +37,7 @@ spec:
             - /bin/bash
           args:
             - -c
-            - export INFLUXDB_HOSTNAME=${POD_NAME}.{{ template "influxdb-cluster.fullname" . }}-data && /entrypoint.sh influxd
+            - export INFLUXDB_HOSTNAME=${POD_NAME}.{{ template "influxdb-cluster.fullname" . }}-data-headless && /entrypoint.sh influxd
           {{- if .Values.data.securityContext }}
           securityContext:
             {{- toYaml .Values.data.securityContext | nindent 12 }}
